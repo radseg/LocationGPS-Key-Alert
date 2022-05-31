@@ -94,6 +94,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        btn_showWayPointList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,ShowSavedLocationsList.class);
+                startActivity(intent);
+            }
+        });
+
+
         sw_gps.setOnClickListener(v -> {
             if (sw_gps.isChecked()) {
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
