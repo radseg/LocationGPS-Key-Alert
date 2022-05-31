@@ -1,10 +1,15 @@
 package com.example.locationgps;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,19 +19,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static final int DEFAULT_UPDATE_INTERVAL = 30;
     public static final int FAST_UPDATE_INTERVAL = 5;
     private static final int PERMISSIONS_FINE_LOCATION = 99;
-    TextView tv_lat,tv_lon,tv_altitude,tv_accuracy,tv_speed,tv_sensor,tv_updates,tv_address;
-    Switch sw_locationsupdates,sw_gps;
+    TextView tv_lat, tv_lon, tv_altitude, tv_accuracy, tv_speed, tv_sensor, tv_updates, tv_address;
+    Switch sw_locationsupdates, sw_gps;
     FusedLocationProviderClient fusedLocationProviderClient;
+    Button goto_user_interface;
     boolean updateOn = false;
     LocationRequest locationRequest;
+    LocationCallback locationCallBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,30 +53,93 @@ public class MainActivity extends AppCompatActivity {
         tv_address = findViewById(R.id.tv_address);
         sw_gps = findViewById(R.id.sw_gps);
         sw_locationsupdates = findViewById(R.id.sw_locationsupdates);
+        goto_user_interface = findViewById(R.id.button2);
 
         locationRequest = LocationRequest.create()
                 .setInterval(100)
                 .setFastestInterval(3000)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setMaxWaitTime(100);
-        locationRequest.setInterval(1000 * DEFAULT_UPDATE_INTERVAL);
+        locationRequest.setInterval(300 * DEFAULT_UPDATE_INTERVAL);//更新間隔
         locationRequest.setFastestInterval(1000 * FAST_UPDATE_INTERVAL);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        locationCallBack = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                //save the location
+                Location location = locationResult.getLastLocation();
+                updateUIValues(location);
+
+            }
+        };
+
 
         sw_gps.setOnClickListener(v -> {
-            if(sw_gps.isChecked()){
+            if (sw_gps.isChecked()) {
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 tv_sensor.setText("Using GPS sensors");
-            }else{
+            } else {
                 locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
                 tv_sensor.setText("Using Towers WIFI");
             }
         });
 
+        sw_locationsupdates.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (sw_locationsupdates.isChecked()) {
+                    //turn on location tracking
+                    startLocationUpdates();
+                } else {
+                    //turn off location tracking
+                    stopLocationUpdates();
+                }
+            }
+        });
+
+
         updateGPS();
 
     }
+
+
+    private void startLocationUpdates() {
+
+        tv_updates.setText("Location is being tracked");
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallBack, null);
+        updateGPS();
+    }
+
+    private void stopLocationUpdates() {
+
+        tv_updates.setText("Location is not being tracked");
+        tv_lat.setText("Location is not being tracked");
+        tv_lon.setText("Location is not being tracked");
+        tv_speed.setText("Location is not being tracked");
+        tv_address.setText("Location is not being tracked");
+        tv_accuracy.setText("Location is not being tracked");
+        tv_altitude.setText("Location is not being tracked");
+        tv_sensor.setText("Location is not being tracked");
+
+        fusedLocationProviderClient.removeLocationUpdates(locationCallBack);
+    }
+
+
+
+
 
 
     @Override
@@ -121,7 +196,24 @@ public class MainActivity extends AppCompatActivity {
         }else {
             tv_speed.setText("Not available");
         }
+
+        Geocoder geocoder = new Geocoder(MainActivity.this);
+        try {
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
+            tv_address.setText(addresses.get(0).getAddressLine(0));
+        }catch (Exception e){
+            tv_address.setText("Unble to get street address");
+
+        }
+
+
+
     }
 
 
+    public void Goto_user_interface(View view){
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, gps_main.class);
+        startActivity(intent);
+    }
 }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">LocationGPS</string>
+    <string-array name="常用地點">
+        <item>無</item>
+        <item>我家</item>
+        <item>工作地</item>
+    </string-array>
 </resources>
