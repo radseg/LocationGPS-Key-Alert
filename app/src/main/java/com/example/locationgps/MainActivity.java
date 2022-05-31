@@ -31,11 +31,14 @@ public class MainActivity extends AppCompatActivity {
     public static final int DEFAULT_UPDATE_INTERVAL = 30;
     public static final int FAST_UPDATE_INTERVAL = 5;
     private static final int PERMISSIONS_FINE_LOCATION = 99;
-    TextView tv_lat, tv_lon, tv_altitude, tv_accuracy, tv_speed, tv_sensor, tv_updates, tv_address;
+    TextView tv_lat, tv_lon, tv_altitude, tv_accuracy, tv_speed, tv_sensor, tv_updates, tv_address,tv_wayPointCounts;
     Switch sw_locationsupdates, sw_gps;
     FusedLocationProviderClient fusedLocationProviderClient;
-    Button goto_user_interface;
+    Button goto_user_interface,btn_newWaypoint,btn_showWayPointList;
     boolean updateOn = false;
+    Location currentLocation;
+    List<Location> savedLocations;
+
     LocationRequest locationRequest;
     LocationCallback locationCallBack;
 
@@ -54,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
         sw_gps = findViewById(R.id.sw_gps);
         sw_locationsupdates = findViewById(R.id.sw_locationsupdates);
         goto_user_interface = findViewById(R.id.button2);
+        btn_newWaypoint = findViewById(R.id.btn_newWayPoint);
+        btn_showWayPointList = findViewById(R.id.btn_showWayPointList);
+        tv_wayPointCounts = findViewById(R.id.tv_countOfCrumbs);
 
         locationRequest = LocationRequest.create()
                 .setInterval(100)
@@ -74,6 +80,18 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
+
+
+
+        btn_newWaypoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyApplication myApplication = (MyApplication)getApplication();
+                savedLocations = myApplication.getMyLocation();
+                savedLocations.add(currentLocation);
+
+            }
+        });
 
 
         sw_gps.setOnClickListener(v -> {
@@ -166,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Location location) {
                     updateUIValues(location);
-
+                    currentLocation = location;
                 }
             });
         }else{
@@ -202,12 +220,14 @@ public class MainActivity extends AppCompatActivity {
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
             tv_address.setText(addresses.get(0).getAddressLine(0));
         }catch (Exception e){
-            tv_address.setText("Unble to get street address");
+            tv_address.setText("Unable to get street address");
 
         }
 
+        MyApplication myApplication = (MyApplication)getApplication();
+        savedLocations = myApplication.getMyLocation();
 
-
+        tv_wayPointCounts.setText(Integer.toString(savedLocations.size()));
     }
 
 
