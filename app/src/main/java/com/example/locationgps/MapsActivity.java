@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.locationgps.databinding.ActivityMapsBinding;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -55,15 +56,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //LatLng sydney = new LatLng(24.1252214, 120.6744177);
         //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
+        LatLng lastLocationPlaced = new LatLng(24.1252214, 120.6744177);
         for (Location location:savedLocations){
             LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
-            markerOptions.title("Lat:"+location.getLatitude()+"Lon:"+location.getLongitude());
+            markerOptions.title("Lat:"+location.getLatitude()+"\t"+"Lon:"+location.getLongitude());
             mMap.addMarker(markerOptions);
+            lastLocationPlaced = latLng;
         }
-
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLocationPlaced,12.0f));
 
     }
 }
