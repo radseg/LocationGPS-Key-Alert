@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     TextView tv_lat, tv_lon, tv_altitude, tv_accuracy, tv_speed, tv_sensor, tv_updates, tv_address,tv_wayPointCounts;
     Switch sw_locationsupdates, sw_gps;
     FusedLocationProviderClient fusedLocationProviderClient;
-    Button goto_user_interface,btn_newWaypoint,btn_showWayPointList;
+    Button goto_user_interface,btn_newWaypoint,btn_showWayPointList,btn_showMap;
     boolean updateOn = false;
     Location currentLocation;
     List<Location> savedLocations;
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         btn_newWaypoint = findViewById(R.id.btn_newWayPoint);
         btn_showWayPointList = findViewById(R.id.btn_showWayPointList);
         tv_wayPointCounts = findViewById(R.id.tv_countOfCrumbs);
+        btn_showMap = findViewById(R.id.btn_showMap);
 
         locationRequest = LocationRequest.create()
                 .setInterval(100)
@@ -89,6 +90,17 @@ public class MainActivity extends AppCompatActivity {
                 MyApplication myApplication = (MyApplication)getApplication();
                 savedLocations = myApplication.getMyLocation();
                 savedLocations.add(currentLocation);
+
+            }
+        });
+
+
+        btn_showMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, MapsActivity.class);
+                startActivity(intent);
 
             }
         });
