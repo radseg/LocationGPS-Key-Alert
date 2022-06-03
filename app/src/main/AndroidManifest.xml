@@ -25,7 +25,8 @@
         <activity
             android:name=".MapsActivity"
             android:exported="false"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".ShowSavedLocationsList"
@@ -38,6 +39,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity android:name=".gps_main" />
         <meta-data

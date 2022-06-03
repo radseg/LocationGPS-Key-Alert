@@ -84,15 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        btn_newWaypoint.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MyApplication myApplication = (MyApplication)getApplication();
-                savedLocations = myApplication.getMyLocation();
-                savedLocations.add(currentLocation);
 
-            }
-        });
 
 
         btn_showMap.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +94,15 @@ public class MainActivity extends AppCompatActivity {
                 intent.setClass(MainActivity.this, MapsActivity.class);
                 startActivity(intent);
 
+            }
+        });
+
+        btn_newWaypoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyApplication myApplication = (MyApplication)getApplication();//你自己建的方法
+                savedLocations = myApplication.getMyLocation();
+                savedLocations.add(currentLocation);
             }
         });
 
@@ -138,9 +139,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         updateGPS();
-
     }
 
 
@@ -162,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         updateGPS();
     }
 
+
     private void stopLocationUpdates() {
 
         tv_updates.setText("Location is not being tracked");
@@ -180,7 +180,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+    // 使用者完成授權的選擇以後，會呼叫 onRequestPermissionsResult 方法
+    //     第一個參數requestCode：請求授權代碼
+    //     第二個參數permissions：請求的授權名稱
+    //     第三個參數grantResults：使用者選擇授權的結果
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -192,12 +195,10 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this,"This app requests permission to be granted in order to work properly",Toast.LENGTH_LONG).show();
                 }
         }
-
-
     }
 
+    //拿到GPS權限，並更新畫面顯示擁有權限
     private void updateGPS(){
-        //拿到GPS權限，並更新畫面顯示擁有權限
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             //從使用者那邊拿到權限
@@ -214,9 +215,10 @@ public class MainActivity extends AppCompatActivity {
             //檢查手機版本是不是6.0以上
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSIONS_FINE_LOCATION);
             }
-
         }
     }
+
+
 
     private void updateUIValues(Location location) {
         //取得新GPS地點並更新所有的TextView值
@@ -242,12 +244,10 @@ public class MainActivity extends AppCompatActivity {
             tv_address.setText(addresses.get(0).getAddressLine(0));
         }catch (Exception e){
             tv_address.setText("Unable to get street address");
-
         }
 
         MyApplication myApplication = (MyApplication)getApplication();
         savedLocations = myApplication.getMyLocation();
-
         tv_wayPointCounts.setText(Integer.toString(savedLocations.size()));
     }
 
