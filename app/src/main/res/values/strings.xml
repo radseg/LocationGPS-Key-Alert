@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">LocationGPS</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="go">出發</string>
     <string-array name="常用地點">
         <item>無</item>
         <item>我家</item>
