@@ -7,14 +7,25 @@
     tools:context=".MapsActivity">
 
     <Button
-        android:id="@+id/btn_listview_add"
+        android:id="@+id/btn_listview_clear"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:color="#C0392B"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lv_address" />
+
+    <Button
+        android:id="@+id/btn_listview_go"
         android:layout_width="match_parent"
         android:layout_height="62dp"
         android:color="#C0392B"
         android:text="@string/go"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lv_address" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_listview_clear" />
 
     <ListView
         android:id="@+id/lv_address"
@@ -32,14 +43,14 @@
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_listview_add" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_listview_go" />
 
     <Spinner
         android:id="@+id/sp_custom"
         android:layout_width="120dp"
         android:layout_height="55dp"
         app:layout_constraintEnd_toStartOf="@+id/editTextTextPersonName"
-        app:layout_constraintTop_toBottomOf="@+id/btn_listview_add" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_listview_go" />
 
     <fragment
         android:id="@+id/gps_map"

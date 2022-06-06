@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateGPS(){
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            //從使用者那邊拿到權限
+            //從使用者按下給權限後執行的動作
             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
