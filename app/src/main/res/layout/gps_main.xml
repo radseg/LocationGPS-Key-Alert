@@ -9,7 +9,7 @@
     <Button
         android:id="@+id/btn_listview_clear"
         android:layout_width="match_parent"
-        android:layout_height="62dp"
+        android:layout_height="50dp"
         android:color="#C0392B"
         android:text="@string/clear"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,7 +19,7 @@
     <Button
         android:id="@+id/btn_listview_go"
         android:layout_width="match_parent"
-        android:layout_height="62dp"
+        android:layout_height="50dp"
         android:color="#C0392B"
         android:text="@string/go"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +30,7 @@
     <ListView
         android:id="@+id/lv_address"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gps_map" />

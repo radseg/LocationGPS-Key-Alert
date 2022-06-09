@@ -212,7 +212,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLocationPlaced,17.0f));
 
 
+        //Map長按事件
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(@NonNull LatLng latLng) {
+                if (Build.VERSION.SDK_INT >= 29) {
+                    //We need background permission
+                    if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        getBackgroundPermission_addGeofence(latLng.latitude,latLng.longitude);
+                    } else {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                            //We show a dialog and ask for permission
+                            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
+                        } else {
+                            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
+                        }
+                    }
+
+                } else {
+                    getBackgroundPermission_addGeofence(latLng.latitude,latLng.longitude);
+                }
+            }
+        });
     }
+
+
+
+
+
 
     private void getBackgroundPermission_addGeofence(double latitude ,double longitude){
 
