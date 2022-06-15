@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -60,24 +62,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GeofencingClient geofencingClient;
     private GeofenceHelper geofenceHelper;
     public long listview_id;  // 儲存 _id 的值
-    public double lastSearch_lat=0,lastSearch_lng=0;
-    public String lastSearch_custom=null,lastSearch_address=null,lastSearch_place=null;
+    public double lastSearch_lat = 0, lastSearch_lng = 0, currentLocation_lat = 0, currentLocation_lng = 0;
+    public String lastSearch_custom = null, lastSearch_address = null, lastSearch_place = null;
     public ListView lv_address;
     public EditText ed_searchAddress;
-    public Button btn_listview_clear,btn_listview_go;
+    public Button btn_listview_clear, btn_listview_go, btn_myLocation;
     public Spinner sp_custom;
+    public ImageView iv_search;
     private GoogleMap mMap;
     LocationRequest locationRequest;
+    LocationCallback locationCallBack;
     //private ActivityMapsBinding binding;
-    private Address_DB address_db=null;
-    String[] custom =new String[]{"其他","我家","工作地"} ;
+    private Address_DB address_db = null;
+    String[] custom = new String[]{"其他", "我家", "工作地"};
     List<Location> savedLocations;
     Cursor cursor;
-
-    private static final float GEOFENCE_RADIUS = 200;
+    private static final float GEOFENCE_RADIUS = 100;
     private static final String GEOFENCE_ID = "SOME_GEOFENCE_ID";
-
-    private static final int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private static final int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
 
 
@@ -86,9 +87,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gps_main);
         /*
-        binding = ActivityMapsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        */
+         *binding = ActivityMapsBinding.inflate(getLayoutInflater());
+         *setContentView(binding.getRoot());
+         */
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -98,8 +99,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ed_searchAddress = findViewById(R.id.editTextTextPersonName);
         btn_listview_clear = findViewById(R.id.btn_listview_clear);
         btn_listview_go = findViewById(R.id.btn_listview_go);
+        btn_myLocation = findViewById(R.id.btn_myLocation);
         sp_custom = findViewById(R.id.sp_custom);
+        iv_search = findViewById(R.id.iv_search);
         lv_address.setOnItemClickListener(addressListViewListener);
+        btn_myLocation.setOnClickListener(btn_addressListViewListener);
         btn_listview_clear.setOnClickListener(btn_addressListViewListener);
         btn_listview_go.setOnClickListener(btn_addressListViewListener);
 
@@ -117,31 +121,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         keyboardSearch();
 
 
-
         //spinner
         sp_custom.setOnItemSelectedListener(sp_customListener);
-        ArrayAdapter<String> custom_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,custom);
+        ArrayAdapter<String> custom_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, custom);
         sp_custom.setAdapter(custom_adapter);
 
-        lastSearch_custom=sp_custom.getSelectedItem().toString();
-        lastSearch_place="中興大學";
-        lastSearch_address="402台灣台中市南區興大路145號";
-        lastSearch_lat=24.123552;
-        lastSearch_lng=120.675326;
+        lastSearch_custom = sp_custom.getSelectedItem().toString();
+        lastSearch_place = "中興大學";
+        lastSearch_address = "402台灣台中市南區興大路145號";
+        lastSearch_lat = 24.123552;
+        lastSearch_lng = 120.675326;
 
 
         //DB載入
-        address_db =new Address_DB(this);// 建立 MyDB 物件
+        address_db = new Address_DB(this);// 建立 MyDB 物件
         address_db.open();
-        cursor=address_db.getAll();
-        if (cursor != null && cursor.getCount() > 0){
-            cursor=address_db.getAll();// 載入全部資料
+        cursor = address_db.getAll();
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor = address_db.getAll();// 載入全部資料
             UpdateAdapter(cursor);  // 載入資料表至 ListView 中
             Log.d(TAG, "onCreate: dbData=true");
-        }else{
-            address_db.append(lastSearch_custom,lastSearch_place,lastSearch_address,lastSearch_lat,lastSearch_lng);
-            cursor=address_db.getAll();// 載入全部資料
-            UpdateAdapter(cursor);  // 載入資料表至 ListView 中
+        } else {
+            DB_AddData(lastSearch_custom, lastSearch_place, lastSearch_address, lastSearch_lat, lastSearch_lng);
             Log.d(TAG, "onCreate: dbData=false");
         }
 
@@ -150,18 +151,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         lv_address.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                if (cursor != null && cursor.getCount() >= 0){
-                    AlertDialog.Builder builder=new AlertDialog.Builder(MapsActivity.this);
+                if (cursor != null && cursor.getCount() >= 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
                     builder.setTitle("確定刪除");
                     builder.setMessage("確定要刪除" + ed_searchAddress.getText() + "這筆資料?");
                     builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int i) {
                         }
                     });
-                    builder.setPositiveButton("確定",new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int i) {
-                            if (address_db.delete(listview_id)){
-                                cursor=address_db.getAll();// 載入全部資料
+                            if (address_db.delete(listview_id)) {
+                                cursor = address_db.getAll();// 載入全部資料
                                 UpdateAdapter(cursor); // 載入資料表至 ListView 中
                                 ClearEdit();
                             }
@@ -173,11 +174,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
+        //搜尋鍵的事件
+        iv_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                geoLocate();
+                //搜尋時會把最後的位置變數存起來
+                getBackgroundPermission_addGeofence(lastSearch_lat, lastSearch_lng);
+            }
+        });
 
         updateGPS();
     }
-
 
 
     /**
@@ -200,16 +208,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MyApplication myApplication = (MyApplication) getApplicationContext();
         savedLocations = myApplication.getMyLocation();
         LatLng lastLocationPlaced = new LatLng(24.1252214, 120.6744177);
-        for (Location location:savedLocations){
-            LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+        for (Location location : savedLocations) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
-            markerOptions.title("Lat:"+location.getLatitude()+"\t"+"Lon:"+location.getLongitude());
+            markerOptions.title("Lat:" + location.getLatitude() + "\t" + "Lon:" + location.getLongitude());
             mMap.addMarker(markerOptions);
             lastLocationPlaced = latLng;
             Log.d(TAG, "onMapReady: ");
         }
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLocationPlaced,17.0f));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLocationPlaced, 17.0f));
 
 
         //Map長按事件
@@ -219,7 +227,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (Build.VERSION.SDK_INT >= 29) {
                     //We need background permission
                     if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        getBackgroundPermission_addGeofence(latLng.latitude,latLng.longitude);
+                        getBackgroundPermission_addGeofence(latLng.latitude, latLng.longitude);
                     } else {
                         if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
                             //We show a dialog and ask for permission
@@ -230,20 +238,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
 
                 } else {
-                    getBackgroundPermission_addGeofence(latLng.latitude,latLng.longitude);
+                    getBackgroundPermission_addGeofence(latLng.latitude, latLng.longitude);
                 }
             }
         });
     }
 
 
+    private void getBackgroundPermission_addGeofence(double latitude, double longitude) {
 
-
-
-
-    private void getBackgroundPermission_addGeofence(double latitude ,double longitude){
-
-        LatLng latLng = new LatLng(latitude,longitude);
+        LatLng latLng = new LatLng(latitude, longitude);
         if (Build.VERSION.SDK_INT >= 29) {
             //We need background permission
             if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -261,8 +265,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mapShowGeofence(latLng);
         }
     }
-
-
 
 
     private void mapShowGeofence(LatLng latLng) {
@@ -312,8 +314,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         CircleOptions circleOptions = new CircleOptions();
         circleOptions.center(latLng);
         circleOptions.radius(radius);
-        circleOptions.strokeColor(Color.argb(255, 255, 0,0));
-        circleOptions.fillColor(Color.argb(64, 255, 0,0));
+        circleOptions.strokeColor(Color.argb(255, 255, 0, 0));
+        circleOptions.fillColor(Color.argb(64, 255, 0, 0));
         circleOptions.strokeWidth(4);
         mMap.addCircle(circleOptions);
     }
@@ -329,50 +331,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case PERMISSIONS_FINE_LOCATION:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     updateGPS();
-                    setMyLocation();
                 } else {
                     Toast.makeText(this, "This app requests permission to be granted in order to work properly", Toast.LENGTH_LONG).show();
                 }
         }
     }
 
+
     //拿到GPS權限，並更新畫面顯示擁有權限
-    private void updateGPS() {
+    private void updateGPS(){
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MapsActivity.this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             //從使用者按下給權限後執行的動作
             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
                     setMyLocation();
+                    currentLocation_lat = location.getLatitude();
+                    currentLocation_lng = location.getLongitude();
+                    mapMarkerAndZoomIn(currentLocation_lat,currentLocation_lng);
+                    Log.d(TAG, "onSuccess: found location!");
                 }
             });
-        } else {
+        }else{
             //使用者沒給權限
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                 //檢查手機版本是不是6.0以上
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSIONS_FINE_LOCATION);
             }
         }
     }
-
-
-
     // 顯示定位圖層，一定要拿完權限才能用這個指令，要不然會閃退
     private void setMyLocation() throws SecurityException {
         mMap.setMyLocationEnabled(true); // 顯示定位圖層
     }
 
-    private void mapMarkerAndZoomIn(double latitude , double longitude) {
-        LatLng latLng = new LatLng(latitude,longitude);
+
+    private void mapMarkerAndZoomIn(double latitude, double longitude) {
+        LatLng latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Lat:"+latitude+"\t"+"Lon:"+longitude);
+        markerOptions.title("Lat:" + latitude + "\t" + "Lon:" + longitude);
         mMap.addMarker(markerOptions);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,17.0f));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17.0f));
         Log.d(TAG, "mapMarker: ");
     }
-
 
 
     //搜尋地點拿到地址、緯度、經度並標記該紅點畫面移動過去
@@ -383,15 +386,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         List<Address> list = new ArrayList<>();
         try {
-            list = geocoder.getFromLocationName(searchString,1);
-        }catch (IOException e){
+            list = geocoder.getFromLocationName(searchString, 1);
+        } catch (IOException e) {
             Log.e(TAG, "geoLocate: IOException" + e.getMessage());
         }
 
-        if (list.size()>0){
+        if (list.size() > 0) {
             Address address = list.get(0);
             //ed_searchAddress.setText("經度 : " + address.getLatitude() + "緯度 : "+ address.getLongitude() + "地址 : " + address.getAddressLine(0));
-            mapMarkerAndZoomIn(address.getLatitude(),address.getLongitude());
+            mapMarkerAndZoomIn(address.getLatitude(), address.getLongitude());
 
             //搜尋的值儲存起來
             lastSearch_custom = sp_custom.getSelectedItem().toString();
@@ -400,19 +403,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             lastSearch_lat = address.getLatitude();
             lastSearch_lng = address.getLongitude();
 
-            //自動加入資料庫並在listView顯示出來
-            if ( address_db.append(lastSearch_custom,lastSearch_place,lastSearch_address,lastSearch_lat,lastSearch_lng)>0){
-                cursor=address_db.getAll();// 載入全部資料
-                UpdateAdapter(cursor);  // 載入資料表至 ListView 中
-            }
+            DB_AddData(lastSearch_custom, lastSearch_place, lastSearch_address, lastSearch_lat, lastSearch_lng);
 
-            Log.d(TAG, "geoLocate: found a location: "+address.toString());
+            Log.d(TAG, "geoLocate: found a location: " + address.toString());
         }
     }
 
+
+    private void DB_AddData(String custom, String place, String address, double lat, double lng) {
+        //資料加入資料庫並在listView顯示出來
+        if (address_db.append(custom, place, address, lat, lng) > 0) {
+            cursor = address_db.getAll();// 載入全部資料
+            UpdateAdapter(cursor);  // 載入資料表至 ListView 中
+        }
+    }
+
+
     //SpinnerItem點擊事件
-    private Spinner.OnItemSelectedListener sp_customListener=
-            new Spinner.OnItemSelectedListener(){
+    private Spinner.OnItemSelectedListener sp_customListener =
+            new Spinner.OnItemSelectedListener() {
 
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View v,
@@ -426,19 +435,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             };
 
     //鍵盤點擊事件
-    private void keyboardSearch(){
+    private void keyboardSearch() {
         Log.d(TAG, "init: initializing");
         ed_searchAddress.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH
-                        ||actionId == EditorInfo.IME_ACTION_DONE
-                        ||event.getAction() == KeyEvent.ACTION_DOWN
-                        ||event.getAction() == KeyEvent.KEYCODE_ENTER)
-                {
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || event.getAction() == KeyEvent.ACTION_DOWN
+                        || event.getAction() == KeyEvent.KEYCODE_ENTER) {
                     geoLocate();
                     //搜尋時會把最後的位置變數存起來
-                    getBackgroundPermission_addGeofence(lastSearch_lat,lastSearch_lng);
+                    getBackgroundPermission_addGeofence(lastSearch_lat, lastSearch_lng);
                 }
                 return false;
             }
@@ -447,15 +455,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     //Button點擊事件
-    private final Button.OnClickListener btn_addressListViewListener=new Button.OnClickListener(){
-        public void onClick(View v){
-            try{
-                if (v.getId() == R.id.btn_listview_clear){
+    private final Button.OnClickListener btn_addressListViewListener = new Button.OnClickListener() {
+        public void onClick(View v) {
+            try {
+                if (v.getId() == R.id.btn_listview_clear) {
                     mMap.clear();
-                    Toast.makeText(MapsActivity.this,"清除紅點選擇",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapsActivity.this, "清除紅點選擇", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onClick: btn_listview_add");
-                }else if (v.getId() == R.id.btn_listview_go){
-                    Toast.makeText(MapsActivity.this,"出發",Toast.LENGTH_SHORT).show();
+                } else if (v.getId() == R.id.btn_listview_go) {
+                    Toast.makeText(MapsActivity.this, "出發", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onClick: btn_listview_del");
+                } else if (v.getId() == R.id.btn_myLocation) {
+                    updateGPS();
+                    getBackgroundPermission_addGeofence(currentLocation_lat, currentLocation_lng);
+                    Toast.makeText(MapsActivity.this,"設定目前位置",Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onClick: btn_listview_del");
                 }
 

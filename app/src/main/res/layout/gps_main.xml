@@ -7,25 +7,58 @@
     tools:context=".MapsActivity">
 
     <Button
-        android:id="@+id/btn_listview_clear"
+        android:id="@+id/btn_myLocation"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:color="#C0392B"
-        android:text="@string/clear"
+        android:text="@string/myLocation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lv_address" />
+
+    <Spinner
+        android:id="@+id/sp_custom"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        app:layout_constraintEnd_toStartOf="@+id/editTextTextPersonName"
+        app:layout_constraintTop_toBottomOf="@+id/btn_listview_go" />
+
+    <ImageView
+        android:id="@+id/iv_search"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="5dp"
+        android:src="@drawable/ic_search"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextTextPersonName"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/btn_listview_go"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:color="#C0392B"
         android:text="@string/go"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_listview_clear" />
+
+    <Button
+        android:id="@+id/btn_listview_clear"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_myLocation" />
+
+    <EditText
+        android:id="@+id/editTextTextPersonName"
+        android:layout_width="310dp"
+        android:layout_height="55dp"
+        android:background="@drawable/white_border"
+        android:ems="10"
+        android:hint="@string/EnterAddress"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_listview_go" />
 
     <ListView
         android:id="@+id/lv_address"
@@ -35,27 +68,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gps_map" />
 
-    <EditText
-        android:id="@+id/editTextTextPersonName"
-        android:layout_width="280dp"
-        android:layout_height="55dp"
-        android:background="@drawable/white_border"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_listview_go" />
-
-    <Spinner
-        android:id="@+id/sp_custom"
-        android:layout_width="120dp"
-        android:layout_height="55dp"
-        app:layout_constraintEnd_toStartOf="@+id/editTextTextPersonName"
-        app:layout_constraintTop_toBottomOf="@+id/btn_listview_go" />
-
     <fragment
         android:id="@+id/gps_map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="350dp" />
+        android:layout_height="350dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

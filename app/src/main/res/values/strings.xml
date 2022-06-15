@@ -3,4 +3,6 @@
     <string name="title_activity_maps">KeyAlert</string>
     <string name="clear">清除紅點選擇</string>
     <string name="go">出發</string>
+    <string name="EnterAddress">請輸入地址</string>
+    <string name="myLocation">設定目前位置</string>
 </resources>
