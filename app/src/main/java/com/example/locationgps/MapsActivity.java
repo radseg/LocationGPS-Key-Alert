@@ -3,6 +3,7 @@ package com.example.locationgps;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -66,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public String lastSearch_custom = null, lastSearch_address = null, lastSearch_place = null;
     public ListView lv_address;
     public EditText ed_searchAddress;
-    public Button btn_listview_clear, btn_listview_go, btn_myLocation;
+    public Button btn_listview_clear, btn_listview_go, btn_myLocation , btn_ble_setting;
     public Spinner sp_custom;
     public ImageView iv_search;
     private GoogleMap mMap;
@@ -74,7 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationCallback locationCallBack;
     //private ActivityMapsBinding binding;
     private Address_DB address_db = null;
-    String[] custom = new String[]{"其他", "我家", "工作地"};
+    String[] custom = new String[]{"\u2302","\u337F","\u2B50"};
     List<Location> savedLocations;
     Cursor cursor;
     private static final float GEOFENCE_RADIUS = 100;
@@ -100,12 +101,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btn_listview_clear = findViewById(R.id.btn_listview_clear);
         btn_listview_go = findViewById(R.id.btn_listview_go);
         btn_myLocation = findViewById(R.id.btn_myLocation);
+        btn_ble_setting = findViewById(R.id.btn_ble_setting);
         sp_custom = findViewById(R.id.sp_custom);
         iv_search = findViewById(R.id.iv_search);
         lv_address.setOnItemClickListener(addressListViewListener);
         btn_myLocation.setOnClickListener(btn_addressListViewListener);
         btn_listview_clear.setOnClickListener(btn_addressListViewListener);
         btn_listview_go.setOnClickListener(btn_addressListViewListener);
+        btn_ble_setting.setOnClickListener(v -> {
+            Intent intent = new Intent(MapsActivity.this , Ble_MainActivity.class);
+            startActivity(intent);
+            Toast.makeText(MapsActivity.this,"設定藍芽",Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onClick: btn_ble");
+        });
 
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
@@ -184,7 +192,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+
+
+
         updateGPS();
+
+
+
+
     }
 
 
@@ -458,18 +473,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final Button.OnClickListener btn_addressListViewListener = new Button.OnClickListener() {
         public void onClick(View v) {
             try {
-                if (v.getId() == R.id.btn_listview_clear) {
-                    mMap.clear();
-                    Toast.makeText(MapsActivity.this, "清除紅點選擇", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "onClick: btn_listview_add");
-                } else if (v.getId() == R.id.btn_listview_go) {
-                    Toast.makeText(MapsActivity.this, "出發", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "onClick: btn_listview_del");
-                } else if (v.getId() == R.id.btn_myLocation) {
-                    updateGPS();
-                    getBackgroundPermission_addGeofence(currentLocation_lat, currentLocation_lng);
-                    Toast.makeText(MapsActivity.this,"設定目前位置",Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "onClick: btn_listview_del");
+                switch (v.getId()){
+                    case R.id.btn_listview_clear:
+                        mMap.clear();
+                        Toast.makeText(MapsActivity.this, "清除紅點選擇", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onClick: btn_listview_add");
+                    break;
+                    case R.id.btn_listview_go:
+                        Toast.makeText(MapsActivity.this, "出發", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onClick: btn_listview_del");
+                        break;
+                    case R.id.btn_myLocation:
+                        updateGPS();
+                        getBackgroundPermission_addGeofence(currentLocation_lat, currentLocation_lng);
+                        Toast.makeText(MapsActivity.this,"設定目前位置",Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onClick: btn_myLocation");
+                        break;
+
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + v.getId());
                 }
 
             }catch (Exception err){
@@ -485,11 +507,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void UpdateAdapter(Cursor cursor){
         if (cursor != null && cursor.getCount() >= 0){
             SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
-                    android.R.layout.simple_list_item_2, // 包含兩個資料項
+                    R.layout.mylayout,// 自訂的 mylayout.xml
                     cursor, // 資料庫的 Cursors 物件
-                    new String[] {"place","address"}, // place、address 欄位
-                    new int[] { android.R.id.text1, android.R.id.text2 },
-                    0);
+                    new String[] {"custom","place", "address" }, // name、price 欄位
+                    new int[] {R.id.tv1,R.id.txtPlace, R.id.txtAddress}, //與 name、price對應的元件
+                    0); // adapter 行為最佳化
             lv_address.setAdapter(adapter); // 將adapter增加到listview中
         }
     }
@@ -505,6 +527,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         int position, long id) {
                     ShowData(id);
                     cursor.moveToPosition(position);
+                    //點擊常亮
+                    if(((ListView)parent).getTag() != null){
+                        ((View)((ListView)parent).getTag()).setBackground(getResources().getDrawable(R.drawable.shape_rectangle));
+                    }
+                    ((ListView)parent).setTag(v);
+                    v.setBackgroundColor(Color.RED);
 
                 }
             };

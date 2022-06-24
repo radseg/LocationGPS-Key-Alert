@@ -1,8 +1,46 @@
 <resources>
     <string name="app_name">LocationGPS</string>
-    <string name="title_activity_maps">KeyAlert</string>
+    <string name="title_activity_maps">MY KEY</string>
     <string name="clear">清除紅點選擇</string>
     <string name="go">出發</string>
     <string name="EnterAddress">請輸入地址</string>
     <string name="myLocation">設定目前位置</string>
+
+    <string name="notifyTitle">提示</string>
+    <string name="gpsNotifyMsg">當前手機掃描藍牙需要打開定位功能。</string>
+    <string name="setting">前往設置</string>
+    <string name="cancel">取消</string>
+
+    <string name="start_scan">開始掃描</string>
+    <string name="stop_scan">停止掃描</string>
+    <string name="expand_search_settings">展開搜尋設置</string>
+    <string name="retrieve_search_settings">收起搜尋設置</string>
+    <string name="connect_fail">連接失敗</string>
+    <string name="active_disconnected">斷開了</string>
+    <string name="disconnected">連接斷開</string>
+    <string name="please_open_blue">請先打開藍牙</string>
+    <string name="select_operation_type">選擇操作類型</string>
+    <string name="characteristic">特性</string>
+    <string name="data_changed">的數據變化：</string>
+    <string name="read">讀</string>
+    <string name="write">寫</string>
+    <string name="open_notification">打開通知</string>
+    <string name="close_notification">關閉通知</string>
+    <string name="service_list">服務列表</string>
+    <string name="characteristic_list">特征列表</string>
+    <string name="console">操作控制臺</string>
+    <string name="name">設備廣播名：</string>
+    <string name="mac">MAC:</string>
+    <string name="service">服務</string>
+    <string name="type">服務類型(主服務)</string>
+    <string name="scan_setting">在下面你可以配置需要掃描的設備的條件，可以為空</string>
+    <string name="setting_name">輸入藍牙設備廣播名，多個之間以英文逗號隔開</string>
+    <string name="setting_mac">輸入藍牙設備mac地址</string>
+    <string name="setting_uuid">輸入藍牙設備UUID，多個之間以英文逗號隔開</string>
+    <string name="input_hex">請輸入HEX格式指令</string>
+    <string name="connect">連接</string>
+    <string name="connected">已連接</string>
+    <string name="disconnect">斷開連接</string>
+    <string name="enter">進入操作</string>
+    <string name="ble_setting">設定藍芽</string>
 </resources>

@@ -3,18 +3,42 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Github/LocationGPS/app/src/main/res/layout/activity_main.xml" value="0.4466666666666667" />
-        <entry key="..\:/Github/LocationGPS/app/src/main/res/layout/gps_main.xml" value="0.25" />
-        <entry key="..\:/Lesson/AS2022/LocationGPS/app/src/main/res/layout/activity_main.xml" value="0.33" />
-        <entry key="..\:/Lesson/github/LocationGPS/app/src/main/res/layout/activity_main.xml" value="0.264" />
-        <entry key="..\:/SuperHigh_Project/LocationGPS/app/src/main/res/drawable/white_border.xml" value="0.307" />
-        <entry key="..\:/SuperHigh_Project/LocationGPS/app/src/main/res/layout/activity_main.xml" value="0.325" />
-        <entry key="..\:/SuperHigh_Project/LocationGPS/app/src/main/res/layout/activity_maps.xml" value="0.325" />
-        <entry key="..\:/SuperHigh_Project/LocationGPS/app/src/main/res/layout/activity_show_saved_locations_list.xml" value="0.325" />
-        <entry key="..\:/SuperHigh_Project/LocationGPS/app/src/main/res/layout/gps_main.xml" value="0.3333333333333333" />
+        <entry key="..\:/Github/FastBle/app/src/main/res/layout/activity_main.xml" value="0.325" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/ble/layout/activity_main.xml" value="0.325" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/activity_main.xml" value="0.3109375" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/activity_operation.xml" value="0.3109375" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/activity_user.xml" value="0.325" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/adapter_characteristic.xml" value="0.3109375" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/adapter_device.xml" value="0.4466666666666667" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/adapter_service.xml" value="0.3109375" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/ble/layout/activity_main.xml" value="0.325" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/ble/layout/layout_characteric_operation.xml" value="0.3109375" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/fragment_characteric_list.xml" value="0.3109375" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/fragment_characteric_operation.xml" value="0.3109375" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/fragment_service_list.xml" value="0.325" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/layout_characteric_operation.xml" value="0.325" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/layout_characteric_operation_button.xml" value="0.325" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/layout/layout_characteric_operation_et.xml" value="0.325" />
+        <entry key="..\:/Ta/AndroidTestProjext/BLE_Final_Test/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2765" />
+        <entry key="..\:/Ta/AndroidTestProjext/FastBle/app/src/main/res/layout/activity_main.xml" value="0.325" />
+        <entry key="..\:/Ta/Github/FastBle/app/src/main/res/layout/activity_main.xml" value="0.29337539432176657" />
+        <entry key="..\:/Ta/Github/FastBle/app/src/main/res/layout/adapter_device.xml" value="0.325" />
+        <entry key="..\:/Ta/Github/FastBle/app/src/main/res/layout/fragment_characteric_list.xml" value="0.325" />
+        <entry key="..\:/Ta/Github/FastBle/app/src/main/res/layout/layout_characteric_operation_button.xml" value="0.325" />
+        <entry key="..\:/Ta/Github/FastBle/app/src/main/res/layout/layout_characteric_operation_et.xml" value="0.3109375" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/drawable-mdpi/ic_baseline_directions_bike_24.xml" value="0.296" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.296" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/drawable/ic_launcher_background.xml" value="0.296" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/drawable/shape_rectangle.xml" value="0.296" />
         <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/layout/activity_main.xml" value="0.325" />
         <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/layout/activity_maps.xml" value="0.325" />
-        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/layout/gps_main.xml" value="0.325" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/layout/activity_operation.xml" value="0.3109375" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/layout/activity_show_saved_locations_list.xml" value="0.325" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/layout/activity_user.xml" value="0.325" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/layout/ble_activity_main.xml" value="0.325" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/layout/custom_notification.xml" value="0.325" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/layout/gps_main.xml" value="0.3333333333333333" />
+        <entry key="..\:/Ta/SuperHigh_Project/LocationGPS/app/src/main/res/layout/mylayout.xml" value="0.325" />
       </map>
     </option>
   </component>

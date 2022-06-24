@@ -9,7 +9,7 @@
     <Button
         android:id="@+id/btn_myLocation"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:text="@string/myLocation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,10 +17,10 @@
 
     <Spinner
         android:id="@+id/sp_custom"
-        android:layout_width="50dp"
+        android:layout_width="100dp"
         android:layout_height="55dp"
         app:layout_constraintEnd_toStartOf="@+id/editTextTextPersonName"
-        app:layout_constraintTop_toBottomOf="@+id/btn_listview_go" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_ble_setting" />
 
     <ImageView
         android:id="@+id/iv_search"
@@ -34,16 +34,26 @@
     <Button
         android:id="@+id/btn_listview_go"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:text="@string/go"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_listview_clear" />
 
     <Button
+        android:id="@+id/btn_ble_setting"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:text="@string/ble_setting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_listview_go" />
+
+    <Button
         android:id="@+id/btn_listview_clear"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:text="@string/clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,14 +61,14 @@
 
     <EditText
         android:id="@+id/editTextTextPersonName"
-        android:layout_width="310dp"
+        android:layout_width="250dp"
         android:layout_height="55dp"
         android:background="@drawable/white_border"
         android:ems="10"
         android:hint="@string/EnterAddress"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_listview_go" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_ble_setting" />
 
     <ListView
         android:id="@+id/lv_address"
